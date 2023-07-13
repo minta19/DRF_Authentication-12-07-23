@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .serializers import Bookserializer
 from .models import CustomUser,Book
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.response import Response
 # Create your views here.
 class BookList(generics.ListAPIView):
@@ -23,7 +23,7 @@ class BookCreate(generics.CreateAPIView):
         serializer.save(author=self.request.user)
     
 
-class BookEdit(generics.RetrieveUpdateDestroyAPIView):
+class BookUpdate(generics.UpdateAPIView):
      queryset=Book.objects.all()
      serializer_class=Bookserializer
      permission_classes=[IsAuthenticated]
@@ -39,6 +39,16 @@ class BookEdit(generics.RetrieveUpdateDestroyAPIView):
         if instance.author != request.user:
            return Response({ 'error':"the user do not have the permission to edit the book"})
         return super().put(request, *args, **kwargs)
+     
+class BookRetrieve(generics.RetrieveAPIView):
+     queryset=Book.objects.all()
+     serializer_class=Bookserializer
+     permission_classes=[AllowAny]
+
+class BookDelete(generics.DestroyAPIView):
+     queryset=Book.objects.all()
+     serializer_class=Bookserializer
+     permission_classes=[IsAuthenticated]
      
      def delete(self, request, *args, **kwargs):
         instance=self.get_object()
