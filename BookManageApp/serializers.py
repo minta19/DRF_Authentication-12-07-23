@@ -3,7 +3,7 @@ from .models import CustomUser,Book
 from rest_framework.validators import UniqueValidator
 
 class UserSerializer(serializers.ModelSerializer):
-    Author_name=serializers.CharField(required=True,validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+    Author_name=serializers.CharField(required=True)
     class Meta:
         model=CustomUser
         fields=['Author_name']
